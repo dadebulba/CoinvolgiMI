@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Milano</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="css/freelancer.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+	<!--mappa stile-->
+	<style>
+	/*Modal style*/
+	   
+.modal {
+    z-index: 100;
+	display: none;
+    position: absolute; /* Stay in place */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* mappa */
+       #map {
+	   margin-top: 100px;
+        height: 100%;
+        width: 100%;
+		left: 0;
+		position: absolute;
+		top: 0; 
+		
+		#elemento{
+			position: absolute;
+			right: 0;
+			top: 12px
+		}
+		
+       }
+	   </style>	
+</head>
+
+<body id="page-top" class="index">
+
+
+    <!-- Navigation -->
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="#page-top">Comune di Milano</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="login.html">Login</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="registrazione.html">Registrati</a>
+                    </li>
+                </ul>
+				
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Cerca</label>
+                                <input type="text" class="form-control" placeholder="Inserisci il nome della via e premi invio." id="indirizzo" required data-validation-required-message="Indirizzo"><br>
+                                <input class="btn btn-success btn-lg elemento" type="button" value="Cerca" style="position: absolute;right: 0;top: 12px;" onClick="cerca()">
+								<!--<p class="help-block text-danger"></p>-->
+                            </div>
+                        </div>
+						
+				
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+	
+
+ <!-- The Modal -->
+ 
+
+	<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h1>Informazioni</h1>
+	<p id="soggetto"></p>
+	<p id="dataAuth"></p>
+	<p id="ogg"></p>
+	<p id="dett"></p>
+	<p id="area"></p>
+	<p id="durata"></p>
+	<p id="inizio"></p>
+	<p id="fine"></p>
+	<br><br>
+	<form action="index.php" method="post">
+		<input type="text" class="form-control" placeholder="Scrivi qui un commento sul cantiere" name="feedback"><br>
+		<input type="submit" class="btn btn-success btn-lg elemento" value="Invia feedback" name="invia">
+		</form>
+	
+  </div>
+
+</div>
+
+    <div id="map"></div>
+	
+	<script src="https://code.jquery.com/jquery-3.1.1.js" >
+	</script>
+	
+    <script>
+	
+	//MODAL SCRIPT
+	// Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+
+
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+
+     // The following example creates complex markers to indicate beaches near
+// Sydney, NSW, Australia. Note that the anchor is set to (0,32) to correspond
+// to the base of the flagpole.
+var geocoder;
+var map;
+  function initMap() {
+    geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(45.4642700, 9.1895100);
+    var mapOptions = {
+      zoom: 10,
+      center: latlng
+    }
+    map = new google.maps.Map(document.getElementById('map'), mapOptions);
+	setMarkers(map);
+  }
+/*
+  function cerca() {
+  alert("cerco");
+    var address = document.getElementById('indirizzo').value;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == 'OK') {
+	    alert(result[0].geometry.location);
+        map.setCenter(results[0].geometry.location);
+        var marker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location
+        });
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  }
+  */
+function cerca(){
+		var address=document.getElementById('indirizzo').value;
+		address+=",Milano,Italia";
+		
+		 var geocoder = new google.maps.Geocoder();
+
+  geocoder.geocode({address: address}, function(results, status) {
+
+    if (status == google.maps.GeocoderStatus.OK) {
+
+      var myResult = results[0].geometry.location; // reference LatLng value
+	  alert(myResult);
+	  
+      createMarker(myResult); // call the function that adds the marker
+
+      map.setCenter(myResult);
+
+      map.setZoom(15);
+
+    }
+  });
+}
+
+function createMarker(latlng) {
+	var marker;
+   // If the user makes another search you must clear the marker variable
+   if(marker != undefined && marker != ''){
+    marker.setMap(null);
+    marker = '';
+   }
+
+   marker = new google.maps.Marker({
+      map: map,
+      position: latlng
+   });
+
+}
+
+function setMarkers(map) {
+  // Adds markers to the map.
+
+  // Marker sizes are expressed as a Size of X,Y where the origin of the image
+  // (0,0) is located in the top left of the image.
+
+  // Origins, anchor positions and coordinates of the marker increase in the X
+  // direction to the right and in the Y direction down.
+
+  // Shapes define the clickable region of the icon. The type defines an HTML
+  // <area> element 'poly' which traces out a polygon as a series of X,Y points.
+  // The final coordinate closes the poly by connecting to the first coordinate.
+  var shape = {
+    coords: [1, 1, 30, 1, 30, 30, 1, 30],
+    type: 'poly'
+  };
+  var array;
+  var j;
+  jQuery.ajax({
+			type: "GET",
+			url: 'info.json',
+			dataType: 'json',
+			
+
+			success: function (obj, textstatus) {
+						  
+							  array = obj;
+							  
+							  for(var i=0;i<array.length;i++){
+								var lat = array[i]['lat'];
+								var log = array[i]['long'];
+								
+								var marker=new google.maps.Marker({
+								position: {lat: lat, lng: log},
+								map: map,
+								icon: '../Milanes/img/construction.png',
+								shape: shape,
+								title: ""+i,
+								zIndex: 1
+								});
+								
+								marker.addListener("click", function () {
+									
+								    j = parseInt(this.title);
+									
+									
+									document.getElementById('soggetto').innerHTML="Soggetto: "+array[j]['soggetto'];
+									document.getElementById('dataAuth').innerHTML="Data autorizzazione: "+array[j]['dataAutorizzazione'];
+									document.getElementById('ogg').innerHTML="Oggetto: "+array[j]['oggetto'];
+									document.getElementById('dett').innerHTML="Dettagli: "+array[j]['dettaglio'];
+									document.getElementById('area').innerHTML="Area: "+array[j]['area']+" m<sup>2</sup>";
+									document.getElementById('durata').innerHTML="Durata: "+array[j]['durata']+" giorni";
+									document.getElementById('inizio').innerHTML="Data inizio: "+array[j]['inizio'];
+									document.getElementById('fine').innerHTML="Data fine: "+array[j]['fine'];
+									modal.style.display = "block";
+									//alert(this.title);
+								}); //end addListener
+							  }
+					}
+	});
+	
+  }
+
+
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLfPHCRRYVq23cZ9y3OaMjsxBgIt-qOYk&callback=initMap">
+    </script>
+	
+
+
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="js/freelancer.min.js"></script>
+
+</body>
+
+</html>
